@@ -2,6 +2,8 @@ name: build
 on:
   push: {tags: ["v*"]}
   workflow_dispatch:
+permissions:
+  contents: write
 jobs:
   build:
     strategy:
@@ -19,7 +21,19 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y unixodbc
       - run: pip install ".[build]"
       - run: python build.py
+      - name: Package
+        shell: bash
+        run: |
+          cd dist
+          N=ETLStudio-${{ runner.os }}
+          if [ "$RUNNER_OS" = Linux ]; then tar czf ../$N.tar.gz ETLStudio
+          elif [ "$RUNNER_OS" = macOS ]; then tar czf ../$N.tar.gz ETLStudio.app
+          else tar -a -cf ../$N.zip ETLStudio; fi
       - uses: actions/upload-artifact@v4
         with:
           name: ETLStudio-${{ matrix.os }}
-          path: dist/
+          path: ETLStudio-*
+      - if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ETLStudio-*
