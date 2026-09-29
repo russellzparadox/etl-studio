@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "etl"
+version = "0.1.0"
+description = "ETL Studio: bidirectional SQL Server <-> PostgreSQL migration tool"
+requires-python = ">=3.13"
+dependencies = [
+    "pandas>=3.0.5",
+    "pandas-stubs~=3.0.5",
+    "psycopg2-binary>=2.9.13",
+    "pyodbc>=5.3.0",
+    "pyside6>=6.11.2",
+    "sqlalchemy>=2.0.52",
+]
+
+[project.optional-dependencies]
+build = ["pyinstaller>=6.0"]
+
+[project.gui-scripts]
+etl-studio = "etl_studio.app:main"
+
+[tool.setuptools]
+packages = ["etl_studio"]
